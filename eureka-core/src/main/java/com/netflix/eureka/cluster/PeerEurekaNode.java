@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.appinfo.AbstractInstanceConfig;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.EurekaIdentityHeaderFilter;
@@ -134,7 +135,7 @@ public class PeerEurekaNode {
 
             String ip = null;
             try {
-                ip = InetAddress.getLocalHost().getHostAddress();
+                ip = AbstractInstanceConfig.getHostAddress();
             } catch (UnknownHostException e) {
                 logger.warn("Cannot find localhost ip", e);
             }

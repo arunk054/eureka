@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.appinfo.AbstractInstanceConfig;
 import com.netflix.appinfo.InstanceInfo.ActionType;
 import com.netflix.discovery.EurekaIdentityHeaderFilter;
 import com.netflix.discovery.TimedSupervisorTask;
@@ -127,7 +128,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
 
         String ip = null;
         try {
-            ip = InetAddress.getLocalHost().getHostAddress();
+            ip = AbstractInstanceConfig.getHostAddress();
         } catch (UnknownHostException e) {
             logger.warn("Cannot find localhost ip", e);
         }
@@ -481,5 +482,4 @@ public class RemoteRegionRegistry implements LookupService<String> {
     public Applications getApplicationDeltas() {
         return this.applicationsDelta.get();
     }
-
 }

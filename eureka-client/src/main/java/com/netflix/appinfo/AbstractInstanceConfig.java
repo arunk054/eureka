@@ -18,6 +18,11 @@ package com.netflix.appinfo;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.net.UnknownHostException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import com.netflix.discovery.shared.Pair;
 import org.slf4j.Logger;
@@ -215,7 +220,7 @@ public abstract class AbstractInstanceConfig implements EurekaInstanceConfig {
     private static Pair<String, String> getHostInfo() {
         Pair<String, String> pair = new Pair<String, String>("", "");
         try {
-            pair.setFirst(InetAddress.getLocalHost().getHostAddress());
+            pair.setFirst(AbstractInstanceConfig.getHostAddress());
             pair.setSecond(InetAddress.getLocalHost().getHostName());
 
         } catch (UnknownHostException e) {
@@ -224,4 +229,38 @@ public abstract class AbstractInstanceConfig implements EurekaInstanceConfig {
         return pair;
     }
 
+  
+    
+  /**
+     * @Author: Arun Kalyanasundaram
+     * Utility method to get IP Address by enumerating network interfaces.
+     * @param - None - default to eth0 now
+     * @return - The IP Address String.
+     */
+    public static String getHostAddress() throws UnknownHostException{
+    
+		try {
+			//Default to eth0 for now, read this from properties
+			String interfaceName = "eth0";
+			NetworkInterface netint = null;
+			Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+			for (NetworkInterface netintIter : Collections.list(nets))
+			{
+				if(interfaceName.equals(netintIter.getName())) {
+					netint = netintIter;
+					break;
+				}
+			}
+			Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+			for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+				byte[] rawArr = inetAddress.getAddress();
+				if (rawArr!= null && rawArr.length>0 && rawArr[0]>0)
+					return inetAddress.getHostAddress();
+			}
+		} catch (Exception e) {
+		}
+		//Failed to find address for the given interface name return default Address
+		return InetAddress.getLocalHost().getHostAddress();
+			
+    }  
 }
