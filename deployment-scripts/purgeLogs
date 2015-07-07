@@ -1,3 +1,0 @@
-#!/bin/sh
-
-rm -f /var/lib/tomcat7/logs/catalina.*
